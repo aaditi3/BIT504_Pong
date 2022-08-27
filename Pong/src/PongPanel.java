@@ -94,7 +94,8 @@ import javax.swing.Timer;
 		update();
 		repaint();
 	}
-		
+	
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
