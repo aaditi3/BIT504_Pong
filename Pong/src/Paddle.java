@@ -2,7 +2,7 @@ import java.awt.Color;
 
 public class Paddle extends Sprite {
 
-	private final static Color PADDLE_COLOUR = Color.WHITE;
+	private final static Color PADDLE_COLOUR = Color.BLUE;
 	private final static int PADDLE_WIDTH = 10;
 	private final static int PADDLE_HEIGHT = 100;
 	private final static int DISTANCE_FROM_EDGE = 40;
