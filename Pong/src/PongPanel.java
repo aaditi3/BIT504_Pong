@@ -52,6 +52,7 @@ import javax.swing.Timer;
 				moveObject(paddle2);
 				moveObject(ball); 	// Move ball
 				checkWallBounce();	// Check for wall bounce
+				checkPaddleBounce(); // Check for paddle bounce
 				break;
 			}
 			case GAMEOVER: {
@@ -92,6 +93,15 @@ import javax.swing.Timer;
 		if (ball.getYPosition() <= 0 || ball.getYPosition () >= getHeight() - ball.getHeight()) {
 			// Hit top or bottom of screen
 			ball.setYVelocity(-ball.getYVelocity());
+		}
+	}
+	
+	private void checkPaddleBounce() {
+		if (ball.getXVelocity() < 0 && ball.getRectangle().intersects(paddle1.getRectangle())) {
+				ball.setXVelocity(BALL_MOVEMENT_SPEED);
+		}
+		if (ball.getXVelocity() > 0 && ball.getRectangle().intersects(paddle2.getRectangle())) {
+				ball.setXVelocity(-BALL_MOVEMENT_SPEED);
 		}
 	}
 	
