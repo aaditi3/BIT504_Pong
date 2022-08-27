@@ -17,6 +17,7 @@ import javax.swing.Timer;
 
 	private final static Color BACKGROUND_COLOUR = Color.BLACK;
 	private final static int TIMER_DELAY = 5;
+	private final static int BALL_MOVEMENT_SPEED = 2;
 	
 	GameState gameState = GameState.INITIALISING;
 	
@@ -40,9 +41,13 @@ import javax.swing.Timer;
 			case INITIALISING: {
 				createObjects();
 				gameState = GameState.PLAYING;
+				ball.setXVelocity(BALL_MOVEMENT_SPEED);
+				ball.setYVelocity(BALL_MOVEMENT_SPEED);
 				break;
 			}
 			case PLAYING: {
+				moveObject(ball); 	// Move ball
+				checkWallBounce();	// Check for wall bounch
 				break;
 			}
 			case GAMEOVER: {
@@ -63,7 +68,33 @@ import javax.swing.Timer;
 	private void paintSprite(Graphics g, Sprite sprite) {
 		g.setColor(sprite.getColour());
 		g.fillRect(sprite.getXPosition(), sprite.getYPosition(), sprite.getWidth(), sprite.getHeight());
-	}	
+	}
+	
+	private void moveObject (Sprite obj) {
+		obj.setXPosition(obj.getXPosition() + obj.getXVelocity(), getWidth());
+		obj.setYPosition(obj.getYPosition() + obj.getYVelocity(), getHeight());
+	}
+	
+	private void checkWallBounce() {
+		if (ball.getXPosition() <= 0) {
+			// Hit left side of screen
+			ball.setXVelocity(-ball.getXVelocity());
+			resetBall();
+		} else if (ball.getXPosition() >= getWidth() - ball.getWidth()) {
+			// Hit right side of screen
+			ball.setXVelocity(-ball.getXVelocity());
+			resetBall();
+		}
+		if (ball.getYPosition() <= 0 || ball.getYPosition () >= getHeight() - ball.getHeight()) {
+			// Hit top or bottom of screen
+			ball.setYVelocity(-ball.getYVelocity());
+		}
+	}
+	
+	private void resetBall() {
+		ball.resetToInitialPosition();
+	}
+	
 		
 	@Override
 	public TransferHandler getTransferHandler() {
