@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.BasicStroke;
+import java.awt.Font;
 
 //import javax.management.timer.Timer;
 import javax.swing.JPanel;
@@ -18,11 +19,19 @@ import javax.swing.Timer;
 	private final static Color BACKGROUND_COLOUR = Color.BLACK;
 	private final static int TIMER_DELAY = 5;
 	private final static int BALL_MOVEMENT_SPEED = 2;
+	private final static int POINTS_TO_WIN = 3;
+	int player1Score = 0, player2Score = 0;
+	Player gameWinner;
 	
 	GameState gameState = GameState.INITIALISING;
 	
 	Ball ball;
 	Paddle paddle1, paddle2;
+	
+	private final static int SCORE_TEXT_X = 100;
+	private final static int SCORE_TEXT_Y = 100;
+	private final static int SCORE_FONT_SIZE = 50;
+	private final static String SCORE_FONT_FAMILY = "Serif";
 			  
 	public PongPanel() {
 		setBackground(BACKGROUND_COLOUR);
@@ -53,6 +62,7 @@ import javax.swing.Timer;
 				moveObject(ball); 	// Move ball
 				checkWallBounce();	// Check for wall bounce
 				checkPaddleBounce(); // Check for paddle bounce
+				checkWin(); // check if the game has been won
 				break;
 			}
 			case GAMEOVER: {
@@ -84,11 +94,13 @@ import javax.swing.Timer;
 		if (ball.getXPosition() <= 0) {
 			// Hit left side of screen
 			ball.setXVelocity(-ball.getXVelocity());
-			resetBall();
+			addScore(Player.Two);
+			resetBall();			
 		} else if (ball.getXPosition() >= getWidth() - ball.getWidth()) {
 			// Hit right side of screen
 			ball.setXVelocity(-ball.getXVelocity());
-			resetBall();
+			addScore(Player.One);
+			resetBall();			
 		}
 		if (ball.getYPosition() <= 0 || ball.getYPosition () >= getHeight() - ball.getHeight()) {
 			// Hit top or bottom of screen
@@ -108,6 +120,33 @@ import javax.swing.Timer;
 	private void resetBall() {
 		ball.resetToInitialPosition();
 	}
+	
+	private void addScore(Player player) {
+		if (player == Player.One) {
+			player1Score++;
+		} else if (player == Player.Two ) {
+			player2Score++;
+		}
+	}
+	
+	private void checkWin() {
+		if (player1Score >= POINTS_TO_WIN) {
+			gameWinner = Player.One;
+			gameState = GameState.GAMEOVER;
+		} else if (player2Score >= POINTS_TO_WIN) {
+			gameWinner = Player.Two;
+			gameState = GameState.GAMEOVER;
+		}
+	}
+	
+	 private void paintScores(Graphics g) {
+         Font scoreFont = new Font(SCORE_FONT_FAMILY, Font.BOLD, SCORE_FONT_SIZE);
+         String leftScore = Integer.toString(player1Score);
+         String rightScore = Integer.toString(player2Score);
+         g.setFont(scoreFont);
+         g.drawString(leftScore, SCORE_TEXT_X, SCORE_TEXT_Y);
+         g.drawString(rightScore, getWidth()-SCORE_TEXT_X, SCORE_TEXT_Y);
+    }
 	
 		
 	@Override
@@ -162,7 +201,8 @@ import javax.swing.Timer;
 		if(gameState != GameState.INITIALISING) {
 			paintSprite(g, ball);
 			paintSprite(g, paddle1);
-			paintSprite(g, paddle2); 
+			paintSprite(g, paddle2);
+			paintScores(g);
 		}
 	}
  }
